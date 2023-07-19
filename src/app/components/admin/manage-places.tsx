@@ -2,49 +2,58 @@ import React, { useEffect, useState } from 'react';
 import { Table, TableContainer, Paper, TableBody, TableHead, TableRow, TableCell, Tab, Button } from '@mui/material';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { City } from '../../interfaces/city';
+import { AddCityModal } from '../modals/add-city.modal';
 
-export const HandList = (props: any) => {
+export const ManagePlaces = (props: any) => {
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
   
     const navigate = useNavigate();
-    const [hands, setHands] = useState<City[]>([]);
+    const [cities, setCities] = useState<City[]>([]);
+
     useEffect(() => {
-        fetch(`https://nh4tl0ai74.execute-api.us-west-1.amazonaws.com/develop/hand-tracker/session/`, {
+        fetch(`${process.env.NX_API_URL}/cities`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json"
-            }
+            },
         })
         .then(response => response.json())
-        .then((data: City[]) => {
-            console.log(data);
-            setHands(data);
+        .then((json) => {
+            const c = json.data as City[];
+            setCities(c);
         });
     }, []);
 
     return (
         <>
+            <Button onClick={handleOpen}>Add City</Button>
             <TableContainer>
                 <Table>
                     <TableHead>
                         <TableRow>
                             <TableCell>Country</TableCell>
                             <TableCell>City</TableCell>
+                            <TableCell>Image Location</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {hands?.map((row) => (   
+                        {cities?.map((row) => (   
                             <TableRow key={row.id}>
-                                <TableCell><NavLink to={`/hand-detail/${row.id}`}>{row.country?.toString()}</NavLink></TableCell>
-                                <TableCell>{row.city}</TableCell>
+                                <TableCell>{row.country}</TableCell>
+                                <TableCell><NavLink to={`/admin/manage-cultural-centers/${row.id}`}>{row.city}</NavLink></TableCell>
+                                <TableCell>{row.imageLocation}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
             </TableContainer>
-            <Button variant="outlined" onClick={() => navigate("/hand-recorder")}>Record New Hand</Button>
+            <AddCityModal 
+                handleClose={handleClose}
+                handleOpen={handleOpen}
+                open={open}
+            />
         </>
     );
 }

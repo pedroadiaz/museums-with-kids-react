@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { Art } from 'src/app/interfaces/art';
 import { SubmitHandler } from 'react-hook-form/dist/types';
-import { randomUUID } from 'crypto';
+import {v4 as uuidv4} from 'uuid';
 
 type Inputs = {
     name: string;
@@ -41,7 +41,7 @@ export const AddArtModal = (props: {
 }) => {
     const { register, handleSubmit, formState: { errors }, reset } = useForm<Inputs>();
     const [art, setArt] = useState<Art>({
-        id: randomUUID(),
+        id: uuidv4(),
         name: "",
         culturalCenterId: props.culturalCenterId,
         active: true,
@@ -52,7 +52,7 @@ export const AddArtModal = (props: {
     })
 
     const onSubmit: SubmitHandler<Inputs> = async (data: Inputs) => {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/art`, {
+        const response = await fetch(`${process.env.NX_API_URL}/art`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -60,7 +60,7 @@ export const AddArtModal = (props: {
             body: JSON.stringify(data)
         });
 
-        const json = (await response.json()) as Art;
+        const json =(await response.json()) as Art;
 
         if (json.id) {
             console.log("Saved successfully!");

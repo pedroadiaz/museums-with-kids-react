@@ -422,7 +422,7 @@ export function NxWelcome({ title }: { title: string }) {
           `,
         }}
       />
-      <ButtonAppBar />
+      <ButtonAppBar pageName="Dashboard"/>
       <div className="wrapper">
         <div className="container">
           <div id="welcome">

@@ -3,4 +3,9 @@
 
 export const environment = {
   production: false,
+  NX_DOMAIN: "dev-v2dp1knv.us.auth0.com",
+  NX_CLIENT_ID: "zuZchk7o8LYC7NJrsYoZVHrBC9N096Tj",
+  NX_CLIENT_SECRET: "IXymsnOSXckCG5HB7CRULMRP6uT9Yt6kGf64U1ETvuCBivfwWAz8qSTFpa4EwVHJ",
+  NX_SERVER_URL: "http://localhost:4200",
+  NX_API_URL: "https://i9ob86bt3f.execute-api.us-west-1.amazonaws.com/development",
 };

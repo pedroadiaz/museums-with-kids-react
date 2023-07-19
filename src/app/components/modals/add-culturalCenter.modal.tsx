@@ -46,6 +46,17 @@ export const AddCulturalCenterModal = (props: {
     const [name, setName] = useState("");
     const [sensitive, setSensitive] = useState(false);
     const [story, setStory] = useState("");
+    const [message, setMessage] = useState("");
+    const [open, setOpen] = useState(false);
+    
+    const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+      if (reason === 'clickaway') {
+        return;
+      }
+
+      setOpen(false);
+    };
+
 
     const onChangeName = (e: any) => {
         setName(e.target.value);
@@ -73,7 +84,7 @@ export const AddCulturalCenterModal = (props: {
             const json = (await response.json()); 
             setStory(json.message);
         } catch (error) {
-            
+            setMessage("There was a problem generating the story.");
         }
 
     }
@@ -181,8 +192,8 @@ export const AddCulturalCenterModal = (props: {
                         >Save</Button>
                     </FormControl>
                 </form>
+                <SnackbarComponent message={message} open={open} handleClose={handleClose} severtiy='error' />
             </Box>
-            <SnackbarComponent message={message} />
         </Modal>
     );
 }

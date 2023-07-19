@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { Suggestion } from 'src/app/interfaces/suggestion';
 import { SubmitHandler } from 'react-hook-form/dist/types';
-import { randomUUID } from 'crypto';
+import {v4 as uuidv4} from 'uuid';
 
 type Inputs = {
     email: string;
@@ -29,14 +29,14 @@ const style = {
   p: 4,
 };
 
-export const AddFeedbackModal = (props: {
+export const AddSuggestionModal = (props: {
     handleOpen: () => void,
     handleClose: () => void,
     open: boolean,
 }) => {
     const { register, handleSubmit, formState: { errors }, reset } = useForm<Inputs>();
     const [suggestion, setSuggestion] = useState<Suggestion>({
-        id: randomUUID(),
+        id: uuidv4(),
         email: "",
         active: true,
         city: "",
@@ -46,7 +46,7 @@ export const AddFeedbackModal = (props: {
     })
 
     const onSubmit: SubmitHandler<Inputs> = async (data: Inputs) => {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/suggestion`, {
+        const response = await fetch(`${process.env.NX_API_URL}/suggestion`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -54,7 +54,7 @@ export const AddFeedbackModal = (props: {
             body: JSON.stringify(data)
         });
 
-        const json = (await response.json()) as Suggestion;
+        const json =(await response.json()) as Suggestion;
 
         if (json.id) {
             console.log("Saved successfully!");

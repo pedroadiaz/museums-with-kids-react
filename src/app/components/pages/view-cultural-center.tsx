@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Button from '@mui/material/Button';
 import CameraIcon from '@mui/icons-material/PhotoCamera';
@@ -10,35 +10,43 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
+import { useParams } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import Link from '@mui/material/Link';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import ButtonAppBar from '../navbar/navbar';
+import { CulturalCenter } from 'src/app/interfaces/culturalCenter';
+import { ButtonAppBar } from '../navbar/navbar';
+import { Footer } from '../common/footer';
+import { NavLink } from 'react-router-dom';
+import { City } from 'src/app/interfaces/city';
 
-function Copyright() {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://museumswithkids.com/">
-        Museums with Kids
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
-
-const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
-export default function CulturalCenter() {
+export const ViewCulturalCenters = () => {
+    const { cityId } = useParams();
+    const [culturalCenters, setCulturalCenters] = useState<CulturalCenter[]>([]);
+    const [city, setCity] = useState<City>();
+
+    useEffect(() => {
+      fetch(`${process.env.NX_API_URL}/culturalCenters/city/${cityId}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        },
+      }).then(response => response.json())
+      .then((json) => {
+        const c = json as { cultruralCenters: CulturalCenter[], city: City};
+        setCulturalCenters(c.cultruralCenters);
+        setCity(c.city);
+      });
+    }, []);
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
-      <ButtonAppBar />
+      <ButtonAppBar pageName='Cities'/>
       <main>
         {/* Hero unit */}
         <Box
@@ -56,29 +64,18 @@ export default function CulturalCenter() {
               color="text.primary"
               gutterBottom
             >
-              Album layout
+              {city?.city}
             </Typography>
             <Typography variant="h5" align="center" color="text.secondary" paragraph>
-              Something short and leading about the collection below—its contents,
-              the creator, etc. Make it short and sweet, but not too short so folks
-              don&apos;t simply skip over it entirely.
+              {city?.story}
             </Typography>
-            <Stack
-              sx={{ pt: 4 }}
-              direction="row"
-              spacing={2}
-              justifyContent="center"
-            >
-              <Button variant="contained">Main call to action</Button>
-              <Button variant="outlined">Secondary action</Button>
-            </Stack>
           </Container>
         </Box>
         <Container sx={{ py: 8 }} maxWidth="md">
           {/* End hero unit */}
           <Grid container spacing={4}>
-            {cards.map((card) => (
-              <Grid item key={card} xs={12} sm={6} md={4}>
+            {culturalCenters.map((culturalCenter) => (
+              <Grid item key={culturalCenter.id} xs={12} sm={6} md={4}>
                 <Card
                   sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
                 >
@@ -88,20 +85,18 @@ export default function CulturalCenter() {
                       // 16:9
                       pt: '56.25%',
                     }}
-                    image="https://source.unsplash.com/random?wallpapers"
+                    image={culturalCenter.imageLocation}
                   />
                   <CardContent sx={{ flexGrow: 1 }}>
                     <Typography gutterBottom variant="h5" component="h2">
-                      Heading
+                      {culturalCenter.name}
                     </Typography>
                     <Typography>
-                      This is a media card. You can use this section to describe the
-                      content.
+                        {culturalCenter.story?.substring(0, 50)}
                     </Typography>
                   </CardContent>
                   <CardActions>
-                    <Button size="small">View</Button>
-                    <Button size="small">Edit</Button>
+                    <NavLink to={`/view-art/${culturalCenter.id}`} >View</NavLink>
                   </CardActions>
                 </Card>
               </Grid>
@@ -109,22 +104,7 @@ export default function CulturalCenter() {
           </Grid>
         </Container>
       </main>
-      {/* Footer */}
-      <Box sx={{ bgcolor: 'background.paper', p: 6 }} component="footer">
-        <Typography variant="h6" align="center" gutterBottom>
-          Footer
-        </Typography>
-        <Typography
-          variant="subtitle1"
-          align="center"
-          color="text.secondary"
-          component="p"
-        >
-          Something here to give the footer a purpose!
-        </Typography>
-        <Copyright />
-      </Box>
-      {/* End footer */}
+      <Footer />
     </ThemeProvider>
   );
 }

@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { Feedback } from 'src/app/interfaces/feedback';
 import { SubmitHandler } from 'react-hook-form/dist/types';
-import { randomUUID } from 'crypto';
+import {v4 as uuidv4} from 'uuid';
 
 type Inputs = {
     email: string;
@@ -36,7 +36,7 @@ export const AddFeedbackModal = (props: {
 }) => {
     const { register, handleSubmit, formState: { errors }, reset } = useForm<Inputs>();
     const [feedback, setFeedback] = useState<Feedback>({
-        id: randomUUID(),
+        id: uuidv4(),
         email: "",
         active: true,
         feedback: "",
@@ -44,7 +44,7 @@ export const AddFeedbackModal = (props: {
     })
 
     const onSubmit: SubmitHandler<Inputs> = async (data: Inputs) => {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/feedback`, {
+        const response = await fetch(`${process.env.NX_API_URL}/feedback`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -52,7 +52,7 @@ export const AddFeedbackModal = (props: {
             body: JSON.stringify(data)
         });
 
-        const json = (await response.json()) as Feedback;
+        const json =(await response.json()) as Feedback;
 
         if (json.id) {
             console.log("Saved successfully!");

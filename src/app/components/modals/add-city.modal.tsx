@@ -8,11 +8,13 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { City } from 'src/app/interfaces/city';
 import { SubmitHandler } from 'react-hook-form/dist/types';
-import { randomUUID } from 'crypto';
+import {v4 as uuidv4} from 'uuid';
 
 type Inputs = {
     city: string;
     country: string;
+    story: string;
+    imageLocation?: string;
 }
 
 const style = {
@@ -33,29 +35,53 @@ export const AddCityModal = (props: {
     open: boolean
 }) => {
     const { register, handleSubmit, formState: { errors }, reset } = useForm<Inputs>();
-    const [city, setCity] = useState<City>({
-        id: randomUUID(),
-        city: "",
-        country: "",
-        active: true,
-        createdDate: new Date()
-    })
+    const [city, setCity] = useState("");
+    const [country, setCountry] = useState("");
+    const [story, setStory] = useState("");
 
-    const onSubmit: SubmitHandler<Inputs> = async (data: Inputs) => {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/cities`, {
+    const onChangeCity = (e: any) => {
+        setCity(e.target.value);
+    }
+
+    const onChangeCountry = (e: any) => {
+        setCountry(e.target.value);
+    }
+
+    const createStory = async() => {
+        const prompt = `Can you summarize a paragraph or two about ${city}, ${country}  in a way a child might understand?`;
+        const response = await fetch(`${process.env.NX_API_URL}/openAI`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify({ prompt: prompt })
         });
 
-        const json = (await response.json()) as City;
+        const json = (await response.json()); 
+        setStory(json.message);
+    }
 
-        if (json.id) {
-            console.log("Saved successfully!");
-            reset();
+    const onSubmit: SubmitHandler<Inputs> = async (data: Inputs) => {
+        const cityObject: City = {
+            id: uuidv4(),
+            createdDate: new Date(),
+            story: story,
+            city: data.city,
+            country: data.country,
+            active: true,
+            imageLocation: data.imageLocation,
         }
+        const response = await fetch(`${process.env.NX_API_URL}/cities`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(cityObject)
+        });
+
+        const json = (await response.json());
+
+        reset();
 
         props.handleClose();
     }
@@ -76,22 +102,52 @@ export const AddCityModal = (props: {
                         <TextField 
                             id="city-text-field"
                             {...register("city")}
-                            value={city.city}
-                            label={city.city ?? "Enter a City"}
+                            label={"Enter a City"}
                             required
-                            type="number"
+                            type="string"
+                            onChange={onChangeCity}
+                            style={{ margin: "10px"}}
                             margin="dense" />
                         <TextField 
                             id="country-text-field"
                             {...register("country")}
-                            value={city.country}
-                            label={city.country ?? "Enter a Country"}
+                            label={"Enter a Country"}
                             required
-                            type="number"
+                            type="string"
+                            onChange={onChangeCountry}
+                            style={{ margin: "10px"}}
                             margin="dense" />
+                        <TextField 
+                            id="image-location-text-field"
+                            {...register("imageLocation")}
+                            label={"Enter an Image Location"}
+                            required
+                            type="string"
+                            style={{ margin: "10px"}}
+                            margin="dense" />
+                        <TextField 
+                            id="story-text-field"
+                            {...register("story")}
+                            label={"Story"}
+                            value={story}
+                            required
+                            type="string"
+                            style={{ margin: "10px"}}
+                            margin="dense" />
+                        <Button
+                            onClick={createStory}
+                            variant="contained"
+                            style={{ margin: "10px"}}
+                        >Create Story</Button>
+                        <Button
+                            onClick={props.handleClose}
+                            variant="contained"
+                            style={{ margin: "10px"}}
+                        >Close</Button>
                         <Button
                             variant="contained"
                             type="submit"
+                            style={{ margin: "10px"}}
                         >Save</Button>
                     </FormControl>
                 </form>
