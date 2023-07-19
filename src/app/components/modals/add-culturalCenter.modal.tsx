@@ -8,7 +8,8 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { CulturalCenter } from 'src/app/interfaces/culturalCenter';
 import { SubmitHandler } from 'react-hook-form/dist/types';
-import { randomUUID } from 'crypto';
+import {v4 as uuidv4} from 'uuid';
+import { SnackbarComponent } from '../common/snackbar';
 
 type Inputs = {
     name: string;
@@ -38,35 +39,68 @@ export const AddCulturalCenterModal = (props: {
     handleClose: () => void,
     open: boolean,
     cityId: string,
+    cityName?: string,
 }) => {
     const { register, handleSubmit, formState: { errors }, reset } = useForm<Inputs>();
-    const [culturalCenter, setCulturalCenter] = useState<CulturalCenter>({
-        id: randomUUID(),
-        name: "",
-        type: "Museum",
-        cityId: props.cityId,
-        active: true,
-        imageLocation: "",
-        story: "",
-        sensitive: false,
-        createdDate: new Date()
-    })
+
+    const [name, setName] = useState("");
+    const [sensitive, setSensitive] = useState(false);
+    const [story, setStory] = useState("");
+
+    const onChangeName = (e: any) => {
+        setName(e.target.value);
+    }
+
+    const onChangeSensitive = (e: any) => {
+        setSensitive(e.target.value);
+    }
+
+    const createStory = async() => {
+        const prompt = sensitive ?
+         `Can you tell me a story about the ${name} in ${props.cityName} that a child would understand, while being respectful of the meaning` : 
+         `Can you tell me a story about the ${name} in ${props.cityName} in a way a child might understand?`;
+        
+        console.log("prompt: ", prompt);
+        try {
+            const response = await fetch(`${process.env.NX_API_URL}/openAI`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ prompt: prompt })
+            });
+    
+            const json = (await response.json()); 
+            setStory(json.message);
+        } catch (error) {
+            
+        }
+
+    }
 
     const onSubmit: SubmitHandler<Inputs> = async (data: Inputs) => {
-        const response = await fetch(`${process.env.REACT_APP_API_URL}/culturalCenters`, {
+        const cultruralCenter: CulturalCenter = {
+            id: uuidv4(),
+            name: data.name,
+            sensitive: data.sensitive,
+            story: data.story,
+            createdDate: new Date(),
+            active: true,
+            imageLocation: data.imageLocation,
+            cityId: props.cityId,
+            type: data.type,
+        }
+        const response = await fetch(`${process.env.NX_API_URL}/culturalCenters`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify(cultruralCenter)
         });
 
-        const json = (await response.json()) as CulturalCenter;
+        const json =await response.json();
 
-        if (json.id) {
-            console.log("Saved successfully!");
-            reset();
-        }
+        reset();
 
         props.handleClose();
     }
@@ -87,13 +121,12 @@ export const AddCulturalCenterModal = (props: {
                         <TextField 
                             id="cultural-center-name-field"
                             {...register("name")}
-                            value={culturalCenter.name}
-                            label={culturalCenter.name ?? "Enter a Name"}
+                            label={"Enter a Name"}
                             required
+                            onChange={onChangeName}
                             margin="dense" />
                         <Select
                             labelId="cultural-center-type"
-                            value={culturalCenter.type}
                             label="type"
                             id="type-select"
                             required
@@ -107,8 +140,7 @@ export const AddCulturalCenterModal = (props: {
                         <TextField 
                             id="cultural-center-image-location"
                             {...register("imageLocation")}
-                            value={culturalCenter.imageLocation}
-                            label={culturalCenter.imageLocation ?? "Enter an Image Location"}
+                            label={"Enter an Image Location"}
                             required
                             margin="dense" />
                         <FormControlLabel
@@ -118,17 +150,39 @@ export const AddCulturalCenterModal = (props: {
                                 {...register("sensitive")}
                                 title="Is Sensitive"
                                 name="sensitive-checkbox"
+                                onChange={onChangeSensitive}
                                 />
                             }
                             label="Is Sensitive"
                         />
+                        <TextField 
+                            id="story-text-field"
+                            {...register("story")}
+                            label={"Story"}
+                            value={story}
+                            required
+                            type="string"
+                            style={{ margin: "10px"}}
+                            margin="dense" />
+                        <Button
+                            onClick={createStory}
+                            variant="contained"
+                            style={{ margin: "10px"}}
+                        >Create Story</Button>
+                        <Button
+                            onClick={props.handleClose}
+                            variant="contained"
+                            style={{ margin: "10px"}}
+                        >Close</Button>
                         <Button
                             variant="contained"
                             type="submit"
+                            style={{ margin: "10px"}}
                         >Save</Button>
                     </FormControl>
                 </form>
             </Box>
+            <SnackbarComponent message={message} />
         </Modal>
     );
 }
