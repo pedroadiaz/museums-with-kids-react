@@ -19,6 +19,7 @@ import { ButtonAppBar } from '../navbar/navbar';
 import { Footer } from '../common/footer';
 import { NavLink } from 'react-router-dom';
 import { City } from 'src/app/interfaces/city';
+import { MainFeaturedPost, MainFeaturedPostProps } from '../common/featured-story';
 
 
 // TODO remove, this demo shouldn't need to reset the theme.
@@ -28,6 +29,7 @@ export const ViewCulturalCenters = () => {
     const { cityId } = useParams();
     const [culturalCenters, setCulturalCenters] = useState<CulturalCenter[]>([]);
     const [city, setCity] = useState<City>();
+    const [post, setFeaturedPost] = useState<MainFeaturedPostProps>();
 
     useEffect(() => {
       fetch(`${process.env.NX_API_URL}/culturalCenters/city/${cityId}`, {
@@ -37,16 +39,26 @@ export const ViewCulturalCenters = () => {
         },
       }).then(response => response.json())
       .then((json) => {
-        const c = json as { cultruralCenters: CulturalCenter[], city: City};
-        setCulturalCenters(c.cultruralCenters);
+        const c = json as { culturalCenters: CulturalCenter[], city: City};
+        setCulturalCenters(c.culturalCenters);
         setCity(c.city);
+        const fpost: MainFeaturedPostProps = {
+          post: {
+            image: c.city.imageLocation,
+            imageText: "",
+            title: c.city.city,
+            description: c.city.story
+          }
+        };
+
+        setFeaturedPost(fpost);
       });
     }, []);
 
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
-      <ButtonAppBar pageName='Cities'/>
+      <ButtonAppBar pageName='View City'/>
       <main>
         {/* Hero unit */}
         <Box
@@ -56,19 +68,10 @@ export const ViewCulturalCenters = () => {
             pb: 6,
           }}
         >
-          <Container maxWidth="sm">
-            <Typography
-              component="h1"
-              variant="h2"
-              align="center"
-              color="text.primary"
-              gutterBottom
-            >
-              {city?.city}
-            </Typography>
-            <Typography variant="h5" align="center" color="text.secondary" paragraph>
-              {city?.story}
-            </Typography>
+          <Container maxWidth="lg">
+            {post?.post && (
+              <MainFeaturedPost post={post?.post} />
+            )}
           </Container>
         </Box>
         <Container sx={{ py: 8 }} maxWidth="md">

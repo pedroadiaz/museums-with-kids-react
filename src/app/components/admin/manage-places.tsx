@@ -3,6 +3,7 @@ import { Table, TableContainer, Paper, TableBody, TableHead, TableRow, TableCell
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { City } from '../../interfaces/city';
 import { AddCityModal } from '../modals/add-city.modal';
+import { ButtonAppBar } from '../navbar/navbar';
 
 export const ManagePlaces = (props: any) => {
     const [open, setOpen] = useState(false);
@@ -28,7 +29,8 @@ export const ManagePlaces = (props: any) => {
 
     return (
         <>
-            <Button onClick={handleOpen}>Add City</Button>
+            <ButtonAppBar pageName='Manage Places'/>
+            <Button variant="contained" onClick={handleOpen} style={{ margin: "10px" }}>Add City</Button>
             <TableContainer>
                 <Table>
                     <TableHead>

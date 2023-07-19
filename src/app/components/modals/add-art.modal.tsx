@@ -40,32 +40,30 @@ export const AddArtModal = (props: {
     culturalCenterId: string,
 }) => {
     const { register, handleSubmit, formState: { errors }, reset } = useForm<Inputs>();
-    const [art, setArt] = useState<Art>({
-        id: uuidv4(),
-        name: "",
-        culturalCenterId: props.culturalCenterId,
-        active: true,
-        imageLocation: "",
-        story: "",
-        sensitive: false,
-        createdDate: new Date()
-    })
+    const [art, setArt] = useState<Art>()
 
     const onSubmit: SubmitHandler<Inputs> = async (data: Inputs) => {
+        const artObject: Art = {
+            id: uuidv4(),
+            name: data.name,
+            culturalCenterId: props.culturalCenterId,
+            active: true,
+            imageLocation: data.imageLocation,
+            story: data.story,
+            sensitive: data.sensitive,
+            createdDate: new Date()
+        };
         const response = await fetch(`${process.env.NX_API_URL}/art`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify(artObject)
         });
 
-        const json =(await response.json()) as Art;
+        const json =await response.json();
 
-        if (json.id) {
-            console.log("Saved successfully!");
-            reset();
-        }
+        reset();
 
         props.handleClose();
     }
@@ -86,16 +84,16 @@ export const AddArtModal = (props: {
                         <TextField 
                             id="art-name-field"
                             {...register("name")}
-                            value={art.name}
-                            label={art.name ?? "Enter a Name"}
+                            label={"Enter a Name"}
                             required
+                            style={{ margin: "10px"}}
                             margin="dense" />
                         <TextField 
                             id="art-image-location"
                             {...register("imageLocation")}
-                            value={art.imageLocation}
-                            label={art.imageLocation ?? "Enter an Image Location"}
+                            label={"Enter an Image Location"}
                             required
+                            style={{ margin: "10px"}}
                             margin="dense" />
                         <FormControlLabel
                             control={
@@ -107,10 +105,24 @@ export const AddArtModal = (props: {
                                 />
                             }
                             label="Is Sensitive"
+                            style={{ margin: "10px"}}
                         />
+                        <TextField 
+                            id="story-text-field"
+                            {...register("story")}
+                            label={"Story"}
+                            type="string"
+                            style={{ margin: "10px"}}
+                            margin="dense" />
+                        <Button
+                            onClick={props.handleClose}
+                            variant="contained"
+                            style={{ margin: "10px"}}
+                        >Close</Button>
                         <Button
                             variant="contained"
                             type="submit"
+                            style={{ margin: "10px"}}
                         >Save</Button>
                     </FormControl>
                 </form>

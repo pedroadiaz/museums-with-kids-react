@@ -85,6 +85,7 @@ export const AddCulturalCenterModal = (props: {
             setStory(json.message);
         } catch (error) {
             setMessage("There was a problem generating the story.");
+            setOpen(true);
         }
 
     }
@@ -170,8 +171,6 @@ export const AddCulturalCenterModal = (props: {
                             id="story-text-field"
                             {...register("story")}
                             label={"Story"}
-                            value={story}
-                            required
                             type="string"
                             style={{ margin: "10px"}}
                             margin="dense" />

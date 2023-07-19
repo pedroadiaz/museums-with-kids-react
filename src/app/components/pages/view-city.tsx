@@ -18,18 +18,20 @@ import { City } from 'src/app/interfaces/city';
 import { ButtonAppBar } from '../navbar/navbar';
 import { Footer } from '../common/footer';
 import { NavLink } from 'react-router-dom';
+import { MainFeaturedPost, MainFeaturedPostProps } from '../common/featured-story';
 
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
 export const ViewCities = () => {
-    const { cntry } = useParams();
-    const country = cntry?.replace('+', ' ');
+    const { country } = useParams();
+    const ctry = country?.replace('+', ' ');
     const [cities, setCities] = useState<City[]>([]);
+    const [post, setFeaturedPost] = useState<MainFeaturedPostProps>();
 
     useEffect(() => {
-      fetch(`${process.env.NX_API_URL}/cities/country?country=${country}`, {
+      fetch(`${process.env.NX_API_URL}/cities/country?country=${ctry}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json"
@@ -39,13 +41,24 @@ export const ViewCities = () => {
       .then((json) => {
         const c = json.data as City[];
         setCities(c);
+        if (c.length > 0) {
+          const fpost: MainFeaturedPostProps = {
+            post: {
+              image: c[0].imageLocation?.replace("1", "4"),
+              imageText: "",
+              title: country
+            }
+          };
+  
+          setFeaturedPost(fpost);
+        }
       });        
     }, []);
 
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
-      <ButtonAppBar pageName='Cities'/>
+      <ButtonAppBar pageName='View Country'/>
       <main>
         {/* Hero unit */}
         <Box
@@ -55,21 +68,10 @@ export const ViewCities = () => {
             pb: 6,
           }}
         >
-          <Container maxWidth="sm">
-            <Typography
-              component="h1"
-              variant="h2"
-              align="center"
-              color="text.primary"
-              gutterBottom
-            >
-              {country}
-            </Typography>
-            <Typography variant="h5" align="center" color="text.secondary" paragraph>
-              Something short and leading about the collection below—its contents,
-              the creator, etc. Make it short and sweet, but not too short so folks
-              don&apos;t simply skip over it entirely.
-            </Typography>
+          <Container maxWidth="lg">
+            {post?.post && (
+              <MainFeaturedPost post={post?.post} />
+            )}
           </Container>
         </Box>
         <Container sx={{ py: 8 }} maxWidth="md">
@@ -93,7 +95,7 @@ export const ViewCities = () => {
                       {city.city}
                     </Typography>
                     <Typography>
-                        {city.story?.substring(0, 50)}
+                        {city.story?.substring(0, 100)}...
                     </Typography>
                   </CardContent>
                   <CardActions>

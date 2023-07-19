@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Table, TableContainer, Paper, TableBody, TableHead, TableRow, TableCell, Tab, Button } from '@mui/material';
+import { Table, TableContainer, Paper, TableBody, TableHead, TableRow, TableCell, Typography, Button } from '@mui/material';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { Art } from '../../interfaces/art';
 import { CulturalCenter } from 'src/app/interfaces/culturalCenter';
 import { AddArtModal } from '../modals/add-art.modal';
+import { ButtonAppBar } from '../navbar/navbar';
 
 export const ManageArt = (props: any) => {
     const [open, setOpen] = useState(false);
@@ -24,20 +25,23 @@ export const ManageArt = (props: any) => {
           })
           .then(response => response.json())
           .then((json) => {
-            const c = json as { cultruralCenter: CulturalCenter, art: Art[]};
-            setCulturalCenter(c.cultruralCenter);
+            const c = json as { culturalCenter: CulturalCenter, art: Art[]};
+            setCulturalCenter(c.culturalCenter);
             setArt(c.art);
           });    
     }, []);
 
     return (
         <>
-            <Button onClick={handleOpen}>Add Art</Button>
+            <ButtonAppBar pageName='Manage Art'/>
+            <Typography id="city-name" variant="h3" component="h1" style={{ margin: "auto", textAlign: "center" }}>
+                {culturalCenter?.name}
+            </Typography>
+            <Button variant="contained" onClick={handleOpen} style={{ margin: "10px" }}>Add Art</Button>
             <TableContainer>
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell>Cultural Center</TableCell>
                             <TableCell>Name</TableCell>
                             <TableCell>Is Sensitive</TableCell>
                             <TableCell>Image Location</TableCell>
@@ -47,7 +51,6 @@ export const ManageArt = (props: any) => {
                     <TableBody>
                         {art?.map((row) => (   
                             <TableRow key={row.id}>
-                                <TableCell>{culturalCenter?.name}</TableCell>
                                 <TableCell>{row.name}</TableCell>
                                 <TableCell>{row.sensitive}</TableCell>
                                 <TableCell>{row.imageLocation}</TableCell>

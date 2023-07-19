@@ -13,21 +13,19 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { CulturalCenter } from 'src/app/interfaces/culturalCenter';
 import { ButtonAppBar } from '../navbar/navbar';
 import { Footer } from '../common/footer';
-import { NavLink } from 'react-router-dom';
 import { Art } from 'src/app/interfaces/art';
 import { MainFeaturedPost, MainFeaturedPostProps } from '../common/featured-story';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
-export const ViewArt = () => {
-    const { culturalCenterId } = useParams();
-    const [culturalCenter, setCulturalCenter] = useState<CulturalCenter>();
-    const [art, setArt] = useState<Art[]>([]);
+export const ViewArtDetail = () => {
+    const { artId } = useParams();
+    const [art, setArt] = useState<Art>();
     const [post, setFeaturedPost] = useState<MainFeaturedPostProps>();
 
     useEffect(() => {
-      fetch(`${process.env.NX_API_URL}/art/culturalCenter/${culturalCenterId}`, {
+      fetch(`${process.env.NX_API_URL}/art/${artId}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json"
@@ -35,16 +33,14 @@ export const ViewArt = () => {
       })
       .then(response => response.json())
       .then((json) => {
-        const c = json as { culturalCenter: CulturalCenter, art: Art[]};
-        console.log(c.culturalCenter);
-        setCulturalCenter(c.culturalCenter);
-        setArt(c.art);
+        const a = json.data as Art;
+        setArt(a);
         const fpost: MainFeaturedPostProps = {
           post: {
-            image: c.culturalCenter.imageLocation,
+            image: a.imageLocation,
             imageText: "",
-            title: c.culturalCenter.name,
-            description: c.culturalCenter.story
+            title: a.name,
+            description: a.story
           }
         };
 
@@ -71,38 +67,6 @@ export const ViewArt = () => {
             )}
           </Container>
         </Box>
-        <Container sx={{ py: 8 }} maxWidth="md">
-          {/* End hero unit */}
-          <Grid container spacing={4}>
-            {art.map((a) => (
-              <Grid item key={a.id} xs={12} sm={6} md={4}>
-                <Card
-                  sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
-                >
-                  <CardMedia
-                    component="div"
-                    sx={{
-                      // 16:9
-                      pt: '56.25%',
-                    }}
-                    image={a.imageLocation}
-                  />
-                  <CardContent sx={{ flexGrow: 1 }}>
-                    <Typography gutterBottom variant="h5" component="h2">
-                      {a.name}
-                    </Typography>
-                    <Typography>
-                        {a.story?.substring(0, 50)}
-                    </Typography>
-                  </CardContent>
-                  <CardActions>
-                    <NavLink to={`/view-art-detail/${a.id}`} >View</NavLink>
-                  </CardActions>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
-        </Container>
       </main>
       <Footer />
     </ThemeProvider>

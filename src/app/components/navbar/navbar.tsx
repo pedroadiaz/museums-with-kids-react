@@ -20,6 +20,7 @@ export const ButtonAppBar = (props: { pageName: string}) => {
     const [internalUser, setUser] = useState<IUser | null>(null);
     const [countries, setCountries] = useState<string[]>([]);
     const [menuItems, setmenuItems] = useState(null);
+    const [adminMenuItems, setAdminMenuItems] = useState(null);
     const [open, setOpen] = useState(false);
     
     const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
@@ -38,6 +39,14 @@ export const ButtonAppBar = (props: { pageName: string}) => {
         setmenuItems(null);
     };
 
+    const openAdminMenuToolTip = (event: any) => {
+      setAdminMenuItems(event.currentTarget);
+    };
+    
+   const closeAdminMenuToolTip = (): any => {
+      setAdminMenuItems(null);
+    };
+
     useEffect(() => {
       fetch(`${process.env.NX_API_URL}/cities`, {
         method: "GET",
@@ -54,7 +63,6 @@ export const ButtonAppBar = (props: { pageName: string}) => {
     }, []);
 
     if (isAuthenticated) {
-      console.log("HERE!!!!!");
       useEffect(() => {
         loginFlow(user)
         .then((u) => {
@@ -71,7 +79,6 @@ export const ButtonAppBar = (props: { pageName: string}) => {
         });
       }, []);
     } else {
-      console.log("Whatever!!!");
       useEffect(() => {setUser(null);}, [])
     }
   return (
@@ -102,6 +109,11 @@ export const ButtonAppBar = (props: { pageName: string}) => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             {props.pageName}
           </Typography>
+          <NavLink style={{margin: "10px", color: 'white'}} to={"/"}>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              Home
+            </Typography>
+          </NavLink>
           {!isAuthenticated && (
             <LoginButton />
           )}
@@ -116,14 +128,14 @@ export const ButtonAppBar = (props: { pageName: string}) => {
                   color="inherit"
                   aria-label="menu"
                   sx={{ mr: 2 }}
-                  onClick={openMenuToolTip}
+                  onClick={openAdminMenuToolTip}
                 >
                   <MenuIcon open={false} />
                 </IconButton>
                 <Menu
-                  anchorEl={menuItems}
-                  open={Boolean(menuItems)}
-                  onClose={closeMenuToolTip}
+                  anchorEl={adminMenuItems}
+                  open={Boolean(adminMenuItems)}
+                  onClose={closeAdminMenuToolTip}
                 >
                   <NavLink to={'/admin/manage-places'}>Manage Places</NavLink>
                   <NavLink to={'/admin/view-feedback'}>View Feedback</NavLink>

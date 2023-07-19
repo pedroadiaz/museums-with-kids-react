@@ -12,15 +12,18 @@ import { ViewFeedback } from './components/admin/view-feedback';
 import { ManageCulturalCenters } from './components/admin/manage-cultural-centers';
 import { ManageArt } from './components/admin/manage-art';
 import { ManagePlaces } from './components/admin/manage-places';
+import { HomePage } from './components/pages/post-login';
+import { ViewArtDetail } from './components/pages/art-detail';
 
 export function App() {
   return (
     <div>
       <Routes>
-        <Route path="/" element={<NxWelcome title='Museums with Kids'/>} />
+        <Route path="/" element={<HomePage />} />
         <Route path="/view-city/:country" element={<ViewCities />} />
         <Route path="/view-cultural-center/:cityId" element={<ViewCulturalCenters/>} />
         <Route path="/view-art/:culturalCenterId" element={<ViewArt />} />
+        <Route path="/view-art-detail/:artId" element={<ViewArtDetail />} />
         <Route path="/admin" element={<ManagePlaces />} />
         <Route path="/admin/manage-users" element={<ViewUsers />} />
         <Route path="/admin/manage-cultural-centers/:cityId" element={<ManageCulturalCenters />} />
