@@ -35,30 +35,28 @@ export const AddSuggestionModal = (props: {
     open: boolean,
 }) => {
     const { register, handleSubmit, formState: { errors }, reset } = useForm<Inputs>();
-    const [suggestion, setSuggestion] = useState<Suggestion>({
-        id: uuidv4(),
-        email: "",
-        active: true,
-        city: "",
-        culturalCenter: "",
-        art: "",
-        createdDate: new Date()
-    })
 
     const onSubmit: SubmitHandler<Inputs> = async (data: Inputs) => {
+        const suggestion: Suggestion = {
+            id: uuidv4(),
+            email: data.email,
+            active: true,
+            city: data.city,
+            culturalCenter: data.culturalCenter,
+            art: data.art,
+            createdDate: new Date()
+        }
         const response = await fetch(`${process.env.NX_API_URL}/suggestion`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify(suggestion)
         });
 
         const json =(await response.json()) as Suggestion;
 
-        if (json.id) {
-            reset();
-        }
+        reset();
 
         props.handleClose();
     }
@@ -79,34 +77,37 @@ export const AddSuggestionModal = (props: {
                         <TextField 
                             id="suggestion-email-field"
                             {...register("email")}
-                            value={suggestion.email}
-                            label={suggestion.email ?? "Enter an Email"}
+                            label={"Enter an Email"}
                             required
                             type="email"
+                            style={{ margin: "10px"}}
                             margin="dense" />
                         <TextField 
                             id="suggestion-city"
                             {...register("city")}
-                            value={suggestion.city}
-                            label={suggestion.city ?? "Enter City"}
-                            required
+                            label={"Enter City"}
+                            style={{ margin: "10px"}}
                             margin="dense" />
                         <TextField 
                             id="suggestion-cultural-center"
                             {...register("culturalCenter")}
-                            value={suggestion.culturalCenter}
-                            label={suggestion.culturalCenter ?? "Enter Cultural Center"}
-                            required
+                            label={ "Enter Cultural Center"}
+                            style={{ margin: "10px"}}
                             margin="dense" />
                         <TextField 
                             id="suggestion-art"
                             {...register("art")}
-                            value={suggestion.art}
-                            label={suggestion.art ?? "Enter Art"}
-                            required
+                            label={"Enter Art"}
+                            style={{ margin: "10px"}}
                             margin="dense" />
                         <Button
+                            onClick={props.handleClose}
                             variant="contained"
+                            style={{ margin: "10px"}}
+                        >Close</Button>
+                        <Button
+                            variant="contained"
+                            style={{ margin: "10px"}}
                             type="submit"
                         >Save</Button>
                     </FormControl>

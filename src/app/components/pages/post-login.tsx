@@ -6,11 +6,13 @@ import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import { useAuth0 } from '@auth0/auth0-react';
 
-export const HomePage = () => {
+export const DashboardPage = () => {
     const { isAuthenticated, isLoading } = useAuth0();
     const [countries, setCountries] = useState<string[]>([]);
     const [posts, setFeaturedPosts] = useState<CountryFeaturedPostProps[]>();
 
+    console.log("is authenticated: ", isAuthenticated);
+    console.log("is loading: ", isLoading);
     useEffect(() => {
       fetch(`${process.env.NX_API_URL}/cities`, {
         method: "GET",
@@ -37,7 +39,8 @@ export const HomePage = () => {
                 post: {
                   image: city?.imageLocation,
                   imageText: "",
-                  country: country
+                  country: country,
+                  isAuthorized: true
                 }
               };
 

@@ -1,36 +1,37 @@
 import React, { useEffect, useState } from 'react';
+import AppBar from '@mui/material/AppBar';
+import Button from '@mui/material/Button';
+import CameraIcon from '@mui/icons-material/PhotoCamera';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
+import Stack from '@mui/material/Stack';
 import Box from '@mui/material/Box';
 import { useParams } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { CulturalCenter } from 'src/app/interfaces/culturalCenter';
-import { ButtonAppBar } from '../navbar/navbar';
-import { Footer } from '../common/footer';
+import { City } from 'src/app/interfaces/city';
 import { NavLink } from 'react-router-dom';
-import { Art } from 'src/app/interfaces/art';
-import { MainFeaturedPost, MainFeaturedPostProps } from '../common/featured-story';
-import { useAuth0 } from '@auth0/auth0-react';
-import { NavigationBreadcrumb } from '../common/breadcrumbs';
+import { MainFeaturedPost, MainFeaturedPostProps } from '../../common/featured-story';
+import HomeIcon from '@mui/icons-material/Home';
+import { NavigationBreadcrumb } from '../../common/breadcrumbs';
+
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
-export const ViewArt = () => {
-    const { isAuthenticated, isLoading } = useAuth0();
-    const { culturalCenterId } = useParams();
-    const [culturalCenter, setCulturalCenter] = useState<CulturalCenter>();
-    const [art, setArt] = useState<Art[]>([]);
+export const UnauthorizedViewCities = () => {
+    const { country } = useParams();
+    const ctry = country?.replace('+', ' ');
+    const [cities, setCities] = useState<City[]>([]);
     const [post, setFeaturedPost] = useState<MainFeaturedPostProps>();
 
     useEffect(() => {
-      fetch(`${process.env.NX_API_URL}/art/culturalCenter/${culturalCenterId}`, {
+      fetch(`${process.env.NX_API_URL}/cities/country?country=${ctry}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json"
@@ -38,34 +39,31 @@ export const ViewArt = () => {
       })
       .then(response => response.json())
       .then((json) => {
-        const c = json as { culturalCenter: CulturalCenter, art: Art[]};
-        setCulturalCenter(c.culturalCenter);
-        if (!isAuthenticated && !isLoading && c.art.length > 0) {
-          setArt(c.art.slice(0, 1));
-        } else {
-          setArt(c.art);
+        const c = json.data as City[];
+        setCities(c.slice(0, 1));
+        if (c.length > 0) {
+          const fpost: MainFeaturedPostProps = {
+            post: {
+              image: c[0].imageLocation?.replace("1", "4"),
+              imageText: "",
+              title: country
+            }
+          };
+  
+          setFeaturedPost(fpost);
         }
-        
-        const fpost: MainFeaturedPostProps = {
-          post: {
-            image: c.culturalCenter.imageLocation,
-            imageText: "",
-            title: c.culturalCenter.name,
-            description: c.culturalCenter.story
-          }
-        };
-
-        setFeaturedPost(fpost);
-      });
+      });        
     }, []);
-    
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
-      <ButtonAppBar pageName='View Cultural Center'/>
       <main>
+        <NavLink to={"/"} style={{ margin: "auto" }}>
+            <HomeIcon></HomeIcon>
+        </NavLink>
         {/* Hero unit */}
-        <NavigationBreadcrumb culturalCenter={culturalCenter?.name} cityId={culturalCenter?.cityId} culturalCenterId={culturalCenter?.id}  isAuthorized={true}/>
+        <NavigationBreadcrumb country={country} isAuthorized={false}/>
         <Box
           sx={{
             bgcolor: 'background.paper',
@@ -82,8 +80,8 @@ export const ViewArt = () => {
         <Container sx={{ py: 8 }} maxWidth="md">
           {/* End hero unit */}
           <Grid container spacing={4}>
-            {art.map((a) => (
-              <Grid item key={a.id} xs={12} sm={6} md={4}>
+            {cities.map((city) => (
+              <Grid item key={city.id} xs={12} sm={6} md={4}>
                 <Card
                   sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
                 >
@@ -93,18 +91,18 @@ export const ViewArt = () => {
                       // 16:9
                       pt: '56.25%',
                     }}
-                    image={a.imageLocation}
+                    image={city.imageLocation}
                   />
                   <CardContent sx={{ flexGrow: 1 }}>
                     <Typography gutterBottom variant="h5" component="h2">
-                      {a.name}
+                      {city.city}
                     </Typography>
                     <Typography>
-                        {a.story?.substring(0, 50)}
+                        {city.story?.substring(0, 100)}...
                     </Typography>
                   </CardContent>
                   <CardActions>
-                    <NavLink to={`/view-art-detail/${a.id}`} >View</NavLink>
+                    <NavLink to={`/unauthorized/view-cultural-center/${city.id}`} >View</NavLink>
                   </CardActions>
                 </Card>
               </Grid>
@@ -112,7 +110,6 @@ export const ViewArt = () => {
           </Grid>
         </Container>
       </main>
-      <Footer />
     </ThemeProvider>
   );
 }

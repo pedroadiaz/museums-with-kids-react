@@ -14,9 +14,11 @@ export const NavigationBreadcrumb = (props: {
     culturalCenter?: string;
     culturalCenterId?: string;
     art?: string;
+    isAuthorized: boolean;
 }) => {
   const location = useLocation();
   const country = props.country ?? localStorage.getItem("country");
+  const prefix = props.isAuthorized ? '' : '/unauthorized';
   if (props.country) {
     localStorage.setItem("country", props.country);
   }
@@ -44,8 +46,8 @@ export const NavigationBreadcrumb = (props: {
   }
 
   const breadcrumbs = [
-    <Link underline="hover" key="1" color="inherit" href="/">
-      Home
+    <Link underline="hover" key="1" color="inherit" href={props.isAuthorized ? "/dashboard" : "/unauthorized/view-country"}>
+      {props.isAuthorized ? "Home" : "Country"}
     </Link>,
 
   ];
@@ -56,7 +58,7 @@ export const NavigationBreadcrumb = (props: {
         underline="hover"
         key="2"
         color="inherit"
-        href={`/view-city/${country}`}        >
+        href={`${prefix}/view-city/${country}`}        >
         {country}
         </Link>
     );
@@ -75,7 +77,7 @@ export const NavigationBreadcrumb = (props: {
         underline="hover"
         key="2"
         color="inherit"
-        href={`/view-cultural-center/${props.cityId}`}
+        href={`${prefix}/view-cultural-center/${props.cityId}`}
         >
         {city}
         </Link>
@@ -103,7 +105,7 @@ export const NavigationBreadcrumb = (props: {
         underline="hover"
         key="2"
         color="inherit"
-        href={`/view-art/${props.culturalCenterId}`}
+        href={`${prefix}/view-art/${props.culturalCenterId}`}
         >
         {culturalCenter}
         </Link>,

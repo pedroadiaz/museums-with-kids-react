@@ -68,7 +68,7 @@ export const ViewCities = () => {
       <ButtonAppBar pageName='View Country'/>
       <main>
         {/* Hero unit */}
-        <NavigationBreadcrumb country={country} />
+        <NavigationBreadcrumb country={country} isAuthorized={true}/>
         <Box
           sx={{
             bgcolor: 'background.paper',

@@ -8,13 +8,15 @@ import MenuIcon from '@mui/material/Menu';
 import { LoginButton } from "src/app/components/account/login";
 import { useAuth0 } from "@auth0/auth0-react";
 import { LogoutButton } from "src/app/components/account/logout";
-import { Menu, MenuItem } from '@mui/material';
+import { Button, Menu, MenuItem } from '@mui/material';
 import { IUser } from 'src/app/interfaces/user';
 import { City } from 'src/app/interfaces/city';
 import { NavLink } from 'react-router-dom';
 import { loginFlow } from 'src/app/utils/login-flow';
 import { SnackbarComponent } from '../common/snackbar';
 import FeedbackIcon from '@mui/icons-material/Feedback';
+import { AddFeedbackModal } from '../modals/feedback.modal';
+import { AddSuggestionModal } from '../modals/suggestion.modal';
 
 export const ButtonAppBar = (props: { pageName: string}) => {
     const { user, isAuthenticated, isLoading } = useAuth0();
@@ -23,6 +25,12 @@ export const ButtonAppBar = (props: { pageName: string}) => {
     const [menuItems, setmenuItems] = useState(null);
     const [adminMenuItems, setAdminMenuItems] = useState(null);
     const [open, setOpen] = useState(false);
+    const [feedbackOpen, setFeedbackOpen] = useState(false);
+    const handleFeedbackOpen = () => setFeedbackOpen(true);
+    const handleFeedbackClose = () => setFeedbackOpen(false);
+    const [suggestionOpen, setSuggestionOpen] = useState(false);
+    const handleSuggestionOpen = () => setSuggestionOpen(true);
+    const handleSuggestionClose = () => setSuggestionOpen(false);
 
     const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
       if (reason === 'clickaway') {
@@ -111,19 +119,12 @@ export const ButtonAppBar = (props: { pageName: string}) => {
             {props.pageName}
           </Typography>
 
-          {!isAuthenticated && !isLoading && (
-            <LoginButton />
-          )}
-          {isAuthenticated && !isLoading && (
-            <LogoutButton />
-          )}
+          <Button variant="contained" onClick={handleFeedbackOpen} style={{ margin: "10px" }}>Feedback</Button>
+          <Button variant="contained" onClick={handleSuggestionOpen} style={{ margin: "10px" }}>Suggestion</Button>
+          <LogoutButton />
+
           {internalUser?.isAdmin && (
               <>
-                <NavLink style={{margin: "10px", color: 'white'}} to={"/"}>
-                  <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                    Home
-                  </Typography>
-                </NavLink>
                 <IconButton
                   size="large"
                   edge="start"
@@ -149,6 +150,16 @@ export const ButtonAppBar = (props: { pageName: string}) => {
         </Toolbar>
       </AppBar>
       <SnackbarComponent handleClose={handleClose} open={open} message='An error occurred logging you in!' severtiy='error'/>
+      <AddFeedbackModal 
+        handleClose={handleFeedbackClose} 
+        handleOpen={handleFeedbackOpen}
+        open={feedbackOpen}
+      />
+      <AddSuggestionModal 
+        handleClose={handleSuggestionClose} 
+        handleOpen={handleSuggestionOpen}
+        open={suggestionOpen}
+      />
     </Box>
   );
 }

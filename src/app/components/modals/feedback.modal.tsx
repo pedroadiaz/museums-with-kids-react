@@ -35,28 +35,26 @@ export const AddFeedbackModal = (props: {
     open: boolean,
 }) => {
     const { register, handleSubmit, formState: { errors }, reset } = useForm<Inputs>();
-    const [feedback, setFeedback] = useState<Feedback>({
-        id: uuidv4(),
-        email: "",
-        active: true,
-        feedback: "",
-        createdDate: new Date()
-    })
 
     const onSubmit: SubmitHandler<Inputs> = async (data: Inputs) => {
+        const feedback: Feedback = {
+            id: uuidv4(),
+            email: data.email,
+            active: true,
+            feedback: data.feedback,
+            createdDate: new Date()
+        };
         const response = await fetch(`${process.env.NX_API_URL}/feedback`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify(feedback)
         });
 
         const json =(await response.json()) as Feedback;
 
-        if (json.id) {
-            reset();
-        }
+        reset();
 
         props.handleClose();
     }
@@ -77,21 +75,29 @@ export const AddFeedbackModal = (props: {
                         <TextField 
                             id="art-name-field"
                             {...register("email")}
-                            value={feedback.email}
-                            label={feedback.email ?? "Enter an Email"}
+                            label={"Enter an Email"}
                             required
                             type="email"
+                            style={{ margin: "10px"}}
                             margin="dense" />
                         <TextField 
                             id="art-image-location"
                             {...register("feedback")}
-                            value={feedback.feedback}
-                            label={feedback.feedback ?? "Enter Feedback"}
+                            label={"Enter Feedback"}
                             required
+                            multiline={true}
+                            rows={5}
+                            style={{ margin: "10px"}}
                             margin="dense" />
+                        <Button
+                            onClick={props.handleClose}
+                            variant="contained"
+                            style={{ margin: "10px"}}
+                        >Close</Button>
                         <Button
                             variant="contained"
                             type="submit"
+                            style={{ margin: "10px"}}
                         >Save</Button>
                     </FormControl>
                 </form>

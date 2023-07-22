@@ -3,6 +3,7 @@ import { Table, TableContainer, Paper, TableBody, TableHead, TableRow, TableCell
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { City } from '../../interfaces/city';
 import { Feedback } from 'src/app/interfaces/feedback';
+import { ButtonAppBar } from '../navbar/navbar';
 
 export const ViewFeedback = (props: any) => {
     const [open, setOpen] = useState(false);
@@ -27,6 +28,7 @@ export const ViewFeedback = (props: any) => {
 
     return (
         <>
+            <ButtonAppBar pageName='View Feedback'/>
             <TableContainer>
                 <Table>
                     <TableHead>

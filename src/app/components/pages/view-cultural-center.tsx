@@ -68,7 +68,7 @@ export const ViewCulturalCenters = () => {
       <ButtonAppBar pageName='View City'/>
       <main>
         {/* Hero unit */}
-        <NavigationBreadcrumb city={city?.city} cityId={city?.id}  />
+        <NavigationBreadcrumb city={city?.city} cityId={city?.id} isAuthorized={true} />
         <Box
           sx={{
             bgcolor: 'background.paper',

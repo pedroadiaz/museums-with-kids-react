@@ -12,14 +12,16 @@ export interface CountryFeaturedPostProps {
     image?: string;
     imageText?: string;
     country: string;
+    isAuthorized: boolean;
   };
 }
 
 export const CountryFeaturedPost = (props: CountryFeaturedPostProps) => {
   const { post } = props;
+  const prefix = post.isAuthorized ? '' : '/unauthorized';
 
   return (
-    <NavLink to={`/view-city/${post.country.replace(' ', '+')}`}>
+    <NavLink to={`${prefix}/view-city/${post.country.replace(' ', '+')}`}>
         <Paper
             sx={{
                 position: 'relative',

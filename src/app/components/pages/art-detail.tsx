@@ -54,7 +54,7 @@ export const ViewArtDetail = () => {
       <CssBaseline />
       <ButtonAppBar pageName='View Art'/>
       <main>
-        <NavigationBreadcrumb culturalCenterId={art?.culturalCenterId} art={art?.name} />
+        <NavigationBreadcrumb culturalCenterId={art?.culturalCenterId} art={art?.name} isAuthorized={true} />
         {/* Hero unit */}
         <Box
           sx={{

@@ -32,7 +32,7 @@ export const ManageCulturalCenters = (props: any) => {
     
     return (
         <>
-            <ButtonAppBar pageName='Manage Places'/>
+            <ButtonAppBar pageName='Manage Cultural Centers'/>
             <Typography id="city-name" variant="h3" component="h1" style={{ margin: "auto", textAlign: "center" }}>
                 {city?.city}
             </Typography>

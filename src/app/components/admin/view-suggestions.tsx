@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Table, TableContainer, Paper, TableBody, TableHead, TableRow, TableCell, Tab, Button } from '@mui/material';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { Suggestion } from 'src/app/interfaces/suggestion';
+import { ButtonAppBar } from '../navbar/navbar';
 
 export const ViewSuggestions = (props: any) => {
     const [open, setOpen] = useState(false);
@@ -27,6 +28,7 @@ export const ViewSuggestions = (props: any) => {
 
     return (
         <>
+            <ButtonAppBar pageName='View Suggestions'/>
             <TableContainer>
                 <Table>
                     <TableHead>
