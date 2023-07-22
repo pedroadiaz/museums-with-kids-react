@@ -14,6 +14,7 @@ import { City } from 'src/app/interfaces/city';
 import { NavLink } from 'react-router-dom';
 import { loginFlow } from 'src/app/utils/login-flow';
 import { SnackbarComponent } from '../common/snackbar';
+import FeedbackIcon from '@mui/icons-material/Feedback';
 
 export const ButtonAppBar = (props: { pageName: string}) => {
     const { user, isAuthenticated, isLoading } = useAuth0();
@@ -22,7 +23,7 @@ export const ButtonAppBar = (props: { pageName: string}) => {
     const [menuItems, setmenuItems] = useState(null);
     const [adminMenuItems, setAdminMenuItems] = useState(null);
     const [open, setOpen] = useState(false);
-    
+
     const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
       if (reason === 'clickaway') {
         return;
@@ -62,15 +63,15 @@ export const ButtonAppBar = (props: { pageName: string}) => {
       });
     }, []);
 
-    if (isAuthenticated) {
+    console.log("is authenticated: ", isAuthenticated);
+    console.log("is loading: ", isLoading);
+    if (isAuthenticated && !isLoading) {
       useEffect(() => {
         loginFlow(user)
         .then((u) => {
           if (!u) {
-            console.log("There was a problem logging you in!");
             setOpen(true);
           } else {
-            console.log("user: ", u);
             if (!u.paid) {
 
             }
@@ -109,19 +110,20 @@ export const ButtonAppBar = (props: { pageName: string}) => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             {props.pageName}
           </Typography>
-          <NavLink style={{margin: "10px", color: 'white'}} to={"/"}>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              Home
-            </Typography>
-          </NavLink>
-          {!isAuthenticated && (
+
+          {!isAuthenticated && !isLoading && (
             <LoginButton />
           )}
-          {isAuthenticated && (
+          {isAuthenticated && !isLoading && (
             <LogoutButton />
           )}
           {internalUser?.isAdmin && (
               <>
+                <NavLink style={{margin: "10px", color: 'white'}} to={"/"}>
+                  <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                    Home
+                  </Typography>
+                </NavLink>
                 <IconButton
                   size="large"
                   edge="start"
@@ -137,10 +139,10 @@ export const ButtonAppBar = (props: { pageName: string}) => {
                   open={Boolean(adminMenuItems)}
                   onClose={closeAdminMenuToolTip}
                 >
-                  <NavLink to={'/admin/manage-places'}>Manage Places</NavLink>
-                  <NavLink to={'/admin/view-feedback'}>View Feedback</NavLink>
-                  <NavLink to={'/admin/view-suggestions'}>View Suggestions</NavLink>
-                  <NavLink to={'/admin/view-users'}>View Users</NavLink>
+                  <MenuItem key={1} value={"Manage Places"}><NavLink to={'/admin/manage-places'}>Manage Places</NavLink></MenuItem>
+                  <MenuItem key={2} value={"View Feedback"}><NavLink to={'/admin/view-feedback'}>View Feedback</NavLink></MenuItem>
+                  <MenuItem key={3} value={"View Suggestions"}><NavLink to={'/admin/view-suggestions'}>View Suggestions</NavLink></MenuItem>
+                  <MenuItem key={4} value={"View Users"}><NavLink to={'/admin/view-users'}>View Users</NavLink></MenuItem>
                 </Menu>
               </>
           )}

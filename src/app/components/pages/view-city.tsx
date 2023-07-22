@@ -19,12 +19,15 @@ import { ButtonAppBar } from '../navbar/navbar';
 import { Footer } from '../common/footer';
 import { NavLink } from 'react-router-dom';
 import { MainFeaturedPost, MainFeaturedPostProps } from '../common/featured-story';
+import { useAuth0 } from '@auth0/auth0-react';
+import { NavigationBreadcrumb } from '../common/breadcrumbs';
 
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
 export const ViewCities = () => {
+    const { isAuthenticated, isLoading } = useAuth0();
     const { country } = useParams();
     const ctry = country?.replace('+', ' ');
     const [cities, setCities] = useState<City[]>([]);
@@ -40,7 +43,11 @@ export const ViewCities = () => {
       .then(response => response.json())
       .then((json) => {
         const c = json.data as City[];
-        setCities(c);
+        if (!isAuthenticated && !isLoading) {
+          setCities(c.slice(0, 1));
+        } else {
+          setCities(c);
+        }
         if (c.length > 0) {
           const fpost: MainFeaturedPostProps = {
             post: {
@@ -61,6 +68,7 @@ export const ViewCities = () => {
       <ButtonAppBar pageName='View Country'/>
       <main>
         {/* Hero unit */}
+        <NavigationBreadcrumb country={country} />
         <Box
           sx={{
             bgcolor: 'background.paper',

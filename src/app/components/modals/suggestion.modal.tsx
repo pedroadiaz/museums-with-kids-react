@@ -57,7 +57,6 @@ export const AddSuggestionModal = (props: {
         const json =(await response.json()) as Suggestion;
 
         if (json.id) {
-            console.log("Saved successfully!");
             reset();
         }
 

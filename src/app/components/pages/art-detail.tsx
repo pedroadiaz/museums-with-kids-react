@@ -15,6 +15,7 @@ import { ButtonAppBar } from '../navbar/navbar';
 import { Footer } from '../common/footer';
 import { Art } from 'src/app/interfaces/art';
 import { MainFeaturedPost, MainFeaturedPostProps } from '../common/featured-story';
+import { NavigationBreadcrumb } from '../common/breadcrumbs';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
@@ -51,8 +52,9 @@ export const ViewArtDetail = () => {
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
-      <ButtonAppBar pageName='View Cultural Center'/>
+      <ButtonAppBar pageName='View Art'/>
       <main>
+        <NavigationBreadcrumb culturalCenterId={art?.culturalCenterId} art={art?.name} />
         {/* Hero unit */}
         <Box
           sx={{

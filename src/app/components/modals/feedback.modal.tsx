@@ -55,7 +55,6 @@ export const AddFeedbackModal = (props: {
         const json =(await response.json()) as Feedback;
 
         if (json.id) {
-            console.log("Saved successfully!");
             reset();
         }
 

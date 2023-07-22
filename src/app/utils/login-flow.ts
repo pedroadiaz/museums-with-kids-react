@@ -19,7 +19,13 @@ export const loginFlow = async (auth0User: User | undefined): Promise<IUser | un
             headers: headers
         });
 
-        internalUser = response.data.data?.[0] as IUser;
+        const users = response.data.data as IUser[];
+
+        if (users.length === 0) {
+            response = { status: 404, data: null };
+        } else {
+            internalUser = users[0];
+        }
     } catch (error) {
         response = { status: 404, data: null };
         console.log(error);

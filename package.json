@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "start": "npx env-cmd -f src/app/.env nx serve",
-    "build": "nx build",
+    "build": "npx env-cmd -f src/app/.env.prod nx build",
     "test": "nx test"
   },
   "private": true,

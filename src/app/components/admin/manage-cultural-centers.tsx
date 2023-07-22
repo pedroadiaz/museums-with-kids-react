@@ -25,7 +25,6 @@ export const ManageCulturalCenters = (props: any) => {
         }).then(response => response.json())
         .then((json) => {
             const c = json as { culturalCenters: CulturalCenter[], city: City};
-            console.log("cultural centers: ", c.culturalCenters);
             setCulturalCenters(c.culturalCenters);
             setCity(c.city);
         });

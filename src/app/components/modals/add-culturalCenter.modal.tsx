@@ -71,7 +71,6 @@ export const AddCulturalCenterModal = (props: {
          `Can you tell me a story about the ${name} in ${props.cityName} that a child would understand, while being respectful of the meaning` : 
          `Can you tell me a story about the ${name} in ${props.cityName} in a way a child might understand?`;
         
-        console.log("prompt: ", prompt);
         try {
             const response = await fetch(`${process.env.NX_API_URL}/openAI`, {
                 method: "POST",

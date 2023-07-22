@@ -9,10 +9,8 @@ const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 
-const domain = process.env.REACT_APP_DOMAIN ?? "dev-v2dp1knv.us.auth0.com";
-console.log("domain: ", domain);
-const clientId = process.env.REACT_APP_CLIENT_ID ?? "zuZchk7o8LYC7NJrsYoZVHrBC9N096Tj";
-console.log("client id: ", clientId);
+const domain = process.env.NX_DOMAIN!;
+const clientId = process.env.NX_CLIENT_ID!;
 
 
 root.render(

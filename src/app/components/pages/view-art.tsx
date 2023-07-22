@@ -16,11 +16,14 @@ import { Footer } from '../common/footer';
 import { NavLink } from 'react-router-dom';
 import { Art } from 'src/app/interfaces/art';
 import { MainFeaturedPost, MainFeaturedPostProps } from '../common/featured-story';
+import { useAuth0 } from '@auth0/auth0-react';
+import { NavigationBreadcrumb } from '../common/breadcrumbs';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
 export const ViewArt = () => {
+    const { isAuthenticated, isLoading } = useAuth0();
     const { culturalCenterId } = useParams();
     const [culturalCenter, setCulturalCenter] = useState<CulturalCenter>();
     const [art, setArt] = useState<Art[]>([]);
@@ -36,9 +39,13 @@ export const ViewArt = () => {
       .then(response => response.json())
       .then((json) => {
         const c = json as { culturalCenter: CulturalCenter, art: Art[]};
-        console.log(c.culturalCenter);
         setCulturalCenter(c.culturalCenter);
-        setArt(c.art);
+        if (!isAuthenticated && !isLoading && c.art.length > 0) {
+          setArt(c.art.slice(0, 1));
+        } else {
+          setArt(c.art);
+        }
+        
         const fpost: MainFeaturedPostProps = {
           post: {
             image: c.culturalCenter.imageLocation,
@@ -58,6 +65,7 @@ export const ViewArt = () => {
       <ButtonAppBar pageName='View Cultural Center'/>
       <main>
         {/* Hero unit */}
+        <NavigationBreadcrumb culturalCenter={culturalCenter?.name} cityId={culturalCenter?.cityId} culturalCenterId={culturalCenter?.id} />
         <Box
           sx={{
             bgcolor: 'background.paper',
