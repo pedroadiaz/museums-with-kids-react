@@ -57,10 +57,13 @@ export const loginFlow = async (auth0User: User | undefined): Promise<IUser | st
         });
 
         if (createdResponse.status === 201) {
-            return internalUser;
-        } else {
-            return undefined;
+            const subscriptionResponse = await axios.post(`${process.env.NX_API_URL}/checkout`, {
+                headers: headers
+            });
+
+            return subscriptionResponse.data.url as string;
         }
+
     }
 
     return internalUser;
