@@ -21,6 +21,7 @@ import { NavLink } from 'react-router-dom';
 import { MainFeaturedPost, MainFeaturedPostProps } from '../common/featured-story';
 import { useAuth0 } from '@auth0/auth0-react';
 import { NavigationBreadcrumb } from '../common/breadcrumbs';
+import { SmallCard } from '../common/small-card';
 
 
 // TODO remove, this demo shouldn't need to reset the theme.
@@ -82,31 +83,13 @@ export const ViewCities = () => {
           {/* End hero unit */}
           <Grid container spacing={4}>
             {cities.map((city) => (
-              <Grid item key={city.id} xs={12} sm={6} md={4}>
-                <Card
-                  sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
-                >
-                  <CardMedia
-                    component="div"
-                    sx={{
-                      // 16:9
-                      pt: '56.25%',
-                    }}
-                    image={city.imageLocation}
-                  />
-                  <CardContent sx={{ flexGrow: 1 }}>
-                    <Typography gutterBottom variant="h5" component="h2">
-                      {city.city}
-                    </Typography>
-                    <Typography>
-                        {city.story?.substring(0, 100)}...
-                    </Typography>
-                  </CardContent>
-                  <CardActions>
-                    <NavLink to={`/view-cultural-center/${city.id}`} >View</NavLink>
-                  </CardActions>
-                </Card>
-              </Grid>
+              <SmallCard 
+                id={city.id} 
+                name={city?.city} 
+                story={city?.story} 
+                imageLocation={city?.imageLocation} 
+                url='/view-cultural-center' 
+              />
             ))}
           </Grid>
         </Container>

@@ -65,7 +65,7 @@ export const AddCityModal = (props: {
         const cityObject: City = {
             id: uuidv4(),
             createdDate: new Date(),
-            story: story,
+            story: data.story,
             city: data.city,
             country: data.country,
             active: true,
@@ -129,7 +129,6 @@ export const AddCityModal = (props: {
                             id="story-text-field"
                             {...register("story")}
                             label={"Story"}
-                            value={story}
                             required
                             type="string"
                             style={{ margin: "10px"}}

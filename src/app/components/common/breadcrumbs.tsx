@@ -46,7 +46,7 @@ export const NavigationBreadcrumb = (props: {
   }
 
   const breadcrumbs = [
-    <Link underline="hover" key="1" color="inherit" href={props.isAuthorized ? "/dashboard" : "/unauthorized/view-country"}>
+    <Link underline="hover" key="1" href={props.isAuthorized ? "/dashboard" : "/unauthorized/view-country"}>
       {props.isAuthorized ? "Home" : "Country"}
     </Link>,
 
@@ -56,7 +56,7 @@ export const NavigationBreadcrumb = (props: {
     breadcrumbs.push(
         <Link
         underline="hover"
-        key="2"
+        key={country}
         color="inherit"
         href={`${prefix}/view-city/${country}`}        >
         {country}
@@ -64,7 +64,7 @@ export const NavigationBreadcrumb = (props: {
     );
   } else {
     breadcrumbs.push(
-        <Typography key="3" color="text.primary">
+        <Typography key={country} style={{ fontSize: "1em", color: "blue"}} >
             {country}
         </Typography>,
     )
@@ -75,9 +75,9 @@ export const NavigationBreadcrumb = (props: {
     breadcrumbs.push(
         <Link
         underline="hover"
-        key="2"
+        key={cityId}
         color="inherit"
-        href={`${prefix}/view-cultural-center/${props.cityId}`}
+        href={`${prefix}/view-cultural-center/${cityId}`}
         >
         {city}
         </Link>
@@ -85,14 +85,14 @@ export const NavigationBreadcrumb = (props: {
 
     if (location.pathname.includes("view-art/")) {
         breadcrumbs.push(
-            <Typography key="3" color="text.primary">
+            <Typography key={culturalCenter} style={{ fontSize: "1em", color: "blue"}} >
                 {culturalCenter}
             </Typography>,
         );
     }
   } else {
     breadcrumbs.push(
-        <Typography key="3" color="text.primary">
+        <Typography key={cityId} style={{ fontSize: "1em", color: "blue"}} >
             {city}
         </Typography>,
     );
@@ -103,13 +103,13 @@ export const NavigationBreadcrumb = (props: {
     breadcrumbs.push(
         <Link
         underline="hover"
-        key="2"
+        key={props.culturalCenterId}
         color="inherit"
         href={`${prefix}/view-art/${props.culturalCenterId}`}
         >
         {culturalCenter}
         </Link>,
-        <Typography key="3" color="text.primary">
+        <Typography key={props.art} style={{ fontSize: "1em", color: "blue"}} >
             {props.art}
         </Typography>,
     );
@@ -117,7 +117,7 @@ export const NavigationBreadcrumb = (props: {
 
   return (
     <Stack spacing={2}>
-      <Breadcrumbs separator="›" aria-label="breadcrumb">
+      <Breadcrumbs style={{ margin: "20px", fontSize: "1.5em", color: "blue"}} separator="›" aria-label="breadcrumb">
         {breadcrumbs}
       </Breadcrumbs>
     </Stack>

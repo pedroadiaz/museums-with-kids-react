@@ -19,8 +19,6 @@ import { AddFeedbackModal } from '../modals/feedback.modal';
 import { AddSuggestionModal } from '../modals/suggestion.modal';
 
 export const ButtonAppBar = (props: { pageName: string}) => {
-    const { user, isAuthenticated, isLoading } = useAuth0();
-    const [internalUser, setUser] = useState<IUser | null>(null);
     const [countries, setCountries] = useState<string[]>([]);
     const [menuItems, setmenuItems] = useState(null);
     const [adminMenuItems, setAdminMenuItems] = useState(null);
@@ -31,6 +29,7 @@ export const ButtonAppBar = (props: { pageName: string}) => {
     const [suggestionOpen, setSuggestionOpen] = useState(false);
     const handleSuggestionOpen = () => setSuggestionOpen(true);
     const handleSuggestionClose = () => setSuggestionOpen(false);
+    const internalUser = JSON.parse(localStorage.getItem("user")!) as IUser;
 
     const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
       if (reason === 'clickaway') {

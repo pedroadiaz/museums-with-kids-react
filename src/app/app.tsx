@@ -20,6 +20,7 @@ import { UnauthorizedViewCountry } from './components/pages/unauthorized/view-co
 import { UnauthorizedViewCulturalCenters } from './components/pages/unauthorized/view-cultural-center';
 import { Payment } from './components/account/payment';
 import { PostLogin } from './components/pages/post-login';
+import { CulturalCenterDetail } from './components/pages/unauthorized/cultural-center-detail';
 
 export function App() {
   return (
@@ -30,6 +31,7 @@ export function App() {
         <Route path="/unauthorized/view-country" element={<UnauthorizedViewCountry />} />
         <Route path="/unauthorized/view-city/:country" element={<UnauthorizedViewCities />} />
         <Route path="/unauthorized/view-cultural-center/:cityId" element={<UnauthorizedViewCulturalCenters/>} />
+        <Route path="/unauthorized/cultural-center-detail/:culturalCenterId" element={<CulturalCenterDetail/>} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/view-city/:country" element={<ViewCities />} />
         <Route path="/view-cultural-center/:cityId" element={<ViewCulturalCenters/>} />

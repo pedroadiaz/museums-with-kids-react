@@ -1,25 +1,28 @@
 import React, { useEffect, useState } from 'react';
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { CulturalCenter } from 'src/app/interfaces/culturalCenter';
-import { ButtonAppBar } from '../navbar/navbar';
-import { Footer } from '../common/footer';
+import { NavLink } from 'react-router-dom';
 import { Art } from 'src/app/interfaces/art';
-import { MainFeaturedPost, MainFeaturedPostProps } from '../common/featured-story';
-import { NavigationBreadcrumb } from '../common/breadcrumbs';
-import { SmallCard } from '../common/small-card';
+import { MainFeaturedPost, MainFeaturedPostProps } from '../../common/featured-story';
+import HomeIcon from '@mui/icons-material/Home';
+import { NavigationBreadcrumb } from '../../common/breadcrumbs';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
-export const ViewArt = () => {
+export const CulturalCenterDetail = () => {
     const { culturalCenterId } = useParams();
     const [culturalCenter, setCulturalCenter] = useState<CulturalCenter>();
-    const [art, setArt] = useState<Art[]>([]);
     const [post, setFeaturedPost] = useState<MainFeaturedPostProps>();
 
     useEffect(() => {
@@ -33,7 +36,6 @@ export const ViewArt = () => {
       .then((json) => {
         const c = json as { culturalCenter: CulturalCenter, art: Art[]};
         setCulturalCenter(c.culturalCenter);
-        setArt(c.art);
         
         const fpost: MainFeaturedPostProps = {
           post: {
@@ -51,10 +53,12 @@ export const ViewArt = () => {
   return (
     <ThemeProvider theme={defaultTheme}>
       <CssBaseline />
-      <ButtonAppBar pageName='View Cultural Center'/>
       <main>
         {/* Hero unit */}
-        <NavigationBreadcrumb culturalCenter={culturalCenter?.name} cityId={culturalCenter?.cityId} culturalCenterId={culturalCenter?.id}  isAuthorized={true}/>
+        <NavLink to={"/"} style={{ margin: "auto" }}>
+            <HomeIcon></HomeIcon>
+        </NavLink>
+        <NavigationBreadcrumb culturalCenter={culturalCenter?.name} cityId={culturalCenter?.cityId} culturalCenterId={culturalCenter?.id}  isAuthorized={false}/>
         <Box
           sx={{
             bgcolor: 'background.paper',
@@ -68,16 +72,7 @@ export const ViewArt = () => {
             )}
           </Container>
         </Box>
-        <Container sx={{ py: 8 }} maxWidth="md">
-          {/* End hero unit */}
-          <Grid container spacing={4}>
-            {art.map((a) => (
-              <SmallCard id={a.id} name={a?.name} story={a?.story} imageLocation={a?.imageLocation} url='/view-art-detail' />
-            ))}
-          </Grid>
-        </Container>
       </main>
-      <Footer />
     </ThemeProvider>
   );
 }

@@ -102,7 +102,7 @@ export const UnauthorizedViewCulturalCenters = () => {
                     </Typography>
                   </CardContent>
                   <CardActions>
-                    <NavLink to={`/view-art/${culturalCenter.id}`} >View</NavLink>
+                    <NavLink to={`/unauthorized/cultural-center-detail/${culturalCenter.id}`} >View</NavLink>
                   </CardActions>
                 </Card>
               </Grid>
