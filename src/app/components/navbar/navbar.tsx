@@ -71,25 +71,6 @@ export const ButtonAppBar = (props: { pageName: string}) => {
       });
     }, []);
 
-    console.log("is authenticated: ", isAuthenticated);
-    console.log("is loading: ", isLoading);
-    if (isAuthenticated && !isLoading) {
-      useEffect(() => {
-        loginFlow(user)
-        .then((u) => {
-          if (!u) {
-            setOpen(true);
-          } else {
-            if (!u.paid) {
-
-            }
-            setUser(u);
-          }
-        });
-      }, []);
-    } else {
-      useEffect(() => {setUser(null);}, [])
-    }
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">

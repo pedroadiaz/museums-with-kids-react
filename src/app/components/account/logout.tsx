@@ -6,7 +6,10 @@ export const LogoutButton = () => {
   const { logout } = useAuth0();
 
   return (
-    <Button color="inherit" onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}>
+    <Button color="inherit" onClick={() => {
+        localStorage.clear();
+        logout({ logoutParams: { returnTo: window.location.origin } });
+      }}>
       Log Out
     </Button>
   );

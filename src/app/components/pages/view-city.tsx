@@ -27,7 +27,6 @@ import { NavigationBreadcrumb } from '../common/breadcrumbs';
 const defaultTheme = createTheme();
 
 export const ViewCities = () => {
-    const { isAuthenticated, isLoading } = useAuth0();
     const { country } = useParams();
     const ctry = country?.replace('+', ' ');
     const [cities, setCities] = useState<City[]>([]);
@@ -43,11 +42,8 @@ export const ViewCities = () => {
       .then(response => response.json())
       .then((json) => {
         const c = json.data as City[];
-        if (!isAuthenticated && !isLoading) {
-          setCities(c.slice(0, 1));
-        } else {
-          setCities(c);
-        }
+        setCities(c);
+        
         if (c.length > 0) {
           const fpost: MainFeaturedPostProps = {
             post: {

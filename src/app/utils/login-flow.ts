@@ -1,9 +1,9 @@
-import { User } from "@auth0/auth0-react";
+import { LocalStorageCache, User } from "@auth0/auth0-react";
 import { IUser } from "../interfaces/user";
 import axios from 'axios';
 import {v4 as uuidv4} from 'uuid';
 
-export const loginFlow = async (auth0User: User | undefined): Promise<IUser | undefined> => {
+export const loginFlow = async (auth0User: User | undefined): Promise<IUser | string | undefined> => {
     let internalUser: IUser | undefined = undefined;
     if (!auth0User) {
         return undefined;
@@ -25,6 +25,14 @@ export const loginFlow = async (auth0User: User | undefined): Promise<IUser | un
             response = { status: 404, data: null };
         } else {
             internalUser = users[0];
+            localStorage.setItem("user", JSON.stringify(internalUser));
+            if (!internalUser.paid) {
+                const subscriptionResponse = await axios.post(`${process.env.NX_API_URL}/checkout`, {
+                    headers: headers
+                });
+        
+                return subscriptionResponse.data.url as string;
+            }
         }
     } catch (error) {
         response = { status: 404, data: null };

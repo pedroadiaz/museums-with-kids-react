@@ -23,7 +23,6 @@ import { NavigationBreadcrumb } from '../common/breadcrumbs';
 const defaultTheme = createTheme();
 
 export const ViewArt = () => {
-    const { isAuthenticated, isLoading } = useAuth0();
     const { culturalCenterId } = useParams();
     const [culturalCenter, setCulturalCenter] = useState<CulturalCenter>();
     const [art, setArt] = useState<Art[]>([]);
@@ -40,11 +39,7 @@ export const ViewArt = () => {
       .then((json) => {
         const c = json as { culturalCenter: CulturalCenter, art: Art[]};
         setCulturalCenter(c.culturalCenter);
-        if (!isAuthenticated && !isLoading && c.art.length > 0) {
-          setArt(c.art.slice(0, 1));
-        } else {
-          setArt(c.art);
-        }
+        setArt(c.art);
         
         const fpost: MainFeaturedPostProps = {
           post: {

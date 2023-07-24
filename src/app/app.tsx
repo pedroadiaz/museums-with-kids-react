@@ -12,18 +12,21 @@ import { ViewFeedback } from './components/admin/view-feedback';
 import { ManageCulturalCenters } from './components/admin/manage-cultural-centers';
 import { ManageArt } from './components/admin/manage-art';
 import { ManagePlaces } from './components/admin/manage-places';
-import { DashboardPage } from './components/pages/post-login';
+import { DashboardPage } from './components/pages/dashboard';
 import { ViewArtDetail } from './components/pages/art-detail';
 import { HomePage } from './components/pages/home-page';
 import { UnauthorizedViewCities } from './components/pages/unauthorized/view-city';
 import { UnauthorizedViewCountry } from './components/pages/unauthorized/view-country';
 import { UnauthorizedViewCulturalCenters } from './components/pages/unauthorized/view-cultural-center';
+import { Payment } from './components/account/payment';
+import { PostLogin } from './components/pages/post-login';
 
 export function App() {
   return (
     <div>
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/post-login" element={<PostLogin />} />
         <Route path="/unauthorized/view-country" element={<UnauthorizedViewCountry />} />
         <Route path="/unauthorized/view-city/:country" element={<UnauthorizedViewCities />} />
         <Route path="/unauthorized/view-cultural-center/:cityId" element={<UnauthorizedViewCulturalCenters/>} />

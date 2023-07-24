@@ -19,7 +19,7 @@ root.render(
       domain={domain}
       clientId={clientId}
       authorizationParams={{
-        redirect_uri: `${process.env.NX_SERVER_URL}/dashboard`
+        redirect_uri: `${process.env.NX_SERVER_URL}/post-login`
       }}
     >
       <BrowserRouter>
