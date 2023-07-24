@@ -7,5 +7,4 @@ export const environment = {
   NX_CLIENT_ID: "zuZchk7o8LYC7NJrsYoZVHrBC9N096Tj",
   NX_SERVER_URL: "http://localhost:4200",
   NX_API_URL: "https://i9ob86bt3f.execute-api.us-west-1.amazonaws.com/development",
-  NX_STRIPE_KEY: "pk_test_51NR6NVDcAbm5hW5sEyaWPsfA5evgD0yOBJzSPWjZqv0tHFQNtCj0WIJZe8sPJlhvExiixJMwO2QU4MR15wuzVn3i00xPre1Rat",
 };
