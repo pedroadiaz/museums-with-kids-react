@@ -5,8 +5,10 @@ import { ButtonAppBar } from '../navbar/navbar';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import { IUser } from 'src/app/interfaces/user';
+import { withAuthenticationRequired } from '@auth0/auth0-react';
+import { HomePage } from './home-page';
 
-export const DashboardPage = () => {
+const DashboardPageComponent = () => {
     const [countries, setCountries] = useState<string[]>([]);
     const [posts, setFeaturedPosts] = useState<CountryFeaturedPostProps[]>();
     const user = JSON.parse(localStorage.getItem("user")!) as IUser;
@@ -83,3 +85,7 @@ export const DashboardPage = () => {
         </>
     )
 }
+
+export const DashboardPage = withAuthenticationRequired(DashboardPageComponent, {
+    onRedirecting: () => <HomePage />
+})

@@ -7,20 +7,20 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import { useParams } from 'react-router-dom';
-import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { CulturalCenter } from 'src/app/interfaces/culturalCenter';
 import { ButtonAppBar } from '../navbar/navbar';
 import { Footer } from '../common/footer';
 import { Art } from 'src/app/interfaces/art';
 import { MainFeaturedPost, MainFeaturedPostProps } from '../common/featured-story';
 import { NavigationBreadcrumb } from '../common/breadcrumbs';
+import { withAuthenticationRequired } from '@auth0/auth0-react';
+import { HomePage } from './home-page';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
-export const ViewArtDetail = () => {
+const ViewArtDetailComponent = () => {
     const { artId } = useParams();
     const [art, setArt] = useState<Art>();
     const [post, setFeaturedPost] = useState<MainFeaturedPostProps>();
@@ -74,3 +74,7 @@ export const ViewArtDetail = () => {
     </ThemeProvider>
   );
 }
+
+export const ViewArtDetail = withAuthenticationRequired(ViewArtDetailComponent, {
+  onRedirecting: () => <HomePage />
+})

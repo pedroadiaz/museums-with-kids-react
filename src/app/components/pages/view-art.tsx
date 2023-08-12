@@ -12,11 +12,13 @@ import { Art } from 'src/app/interfaces/art';
 import { MainFeaturedPost, MainFeaturedPostProps } from '../common/featured-story';
 import { NavigationBreadcrumb } from '../common/breadcrumbs';
 import { SmallCard } from '../common/small-card';
+import { withAuthenticationRequired } from '@auth0/auth0-react';
+import { HomePage } from './home-page';
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
-export const ViewArt = () => {
+const ViewArtComponent = () => {
     const { culturalCenterId } = useParams();
     const [culturalCenter, setCulturalCenter] = useState<CulturalCenter>();
     const [art, setArt] = useState<Art[]>([]);
@@ -81,3 +83,7 @@ export const ViewArt = () => {
     </ThemeProvider>
   );
 }
+
+export const ViewArt = withAuthenticationRequired(ViewArtComponent, {
+  onRedirecting: () => <HomePage />
+})

@@ -19,15 +19,16 @@ import { ButtonAppBar } from '../navbar/navbar';
 import { Footer } from '../common/footer';
 import { NavLink } from 'react-router-dom';
 import { MainFeaturedPost, MainFeaturedPostProps } from '../common/featured-story';
-import { useAuth0 } from '@auth0/auth0-react';
+import { useAuth0, withAuthenticationRequired } from '@auth0/auth0-react';
 import { NavigationBreadcrumb } from '../common/breadcrumbs';
 import { SmallCard } from '../common/small-card';
+import { HomePage } from './home-page';
 
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
-export const ViewCities = () => {
+const ViewCitiesComponent = () => {
     const { country } = useParams();
     const ctry = country?.replace('+', ' ');
     const [cities, setCities] = useState<City[]>([]);
@@ -98,3 +99,7 @@ export const ViewCities = () => {
     </ThemeProvider>
   );
 }
+
+export const ViewCities = withAuthenticationRequired(ViewCitiesComponent, {
+  onRedirecting: () => <HomePage />
+})

@@ -13,11 +13,14 @@ import { MainFeaturedPost, MainFeaturedPostProps } from '../common/featured-stor
 import { useAuth0 } from '@auth0/auth0-react';
 import { NavigationBreadcrumb } from '../common/breadcrumbs';
 import { SmallCard } from '../common/small-card';
+import { withAuthenticationRequired } from '@auth0/auth0-react';
+import { HomePage } from './home-page';
+
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
-export const ViewCulturalCenters = () => {
+const ViewCulturalCentersComponent = () => {
     const { isAuthenticated, isLoading } = useAuth0();
     const { cityId } = useParams();
     const [culturalCenters, setCulturalCenters] = useState<CulturalCenter[]>([]);
@@ -92,3 +95,7 @@ export const ViewCulturalCenters = () => {
     </ThemeProvider>
   );
 }
+
+export const ViewCulturalCenters = withAuthenticationRequired(ViewCulturalCentersComponent, {
+  onRedirecting: () => <HomePage />
+})

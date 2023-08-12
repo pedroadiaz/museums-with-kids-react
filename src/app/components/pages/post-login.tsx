@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useAuth0 } from "@auth0/auth0-react";
+import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
 import { loginFlow } from 'src/app/utils/login-flow';
 import { CircularProgressThing } from '../common/circular-progress';
 import { loadStripe } from '@stripe/stripe-js';
 import { useNavigate } from 'react-router-dom';
+import { HomePage } from './home-page';
 
-export const PostLogin = () => {
+const PostLoginComponent = () => {
     const { user, isLoading } = useAuth0();
     const [loading, setLoading] = useState<boolean>(true);
     const navigate = useNavigate();
@@ -43,3 +44,7 @@ export const PostLogin = () => {
         </>
     )
 }
+
+export const PostLogin = withAuthenticationRequired(PostLoginComponent, {
+    onRedirecting: () => <HomePage />
+})
